@@ -24,6 +24,7 @@ const Benefits = () => {
           <img src="/Beneficios.JPG" alt="Beneficios de Foodiescan" className={styles.image} />
         </div>
       </div>
+      
     </section>
   );
 };

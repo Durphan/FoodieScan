@@ -127,6 +127,7 @@ jobs:
           render-api-key: ${{ secrets.RENDER_API_KEY }}
           wait-for-deployment: true
           max-wait-time: 360
+          
     env:
       RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
       SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/menuproject

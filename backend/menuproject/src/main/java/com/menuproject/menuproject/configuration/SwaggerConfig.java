@@ -10,8 +10,9 @@ public class SwaggerConfig {
     @Bean
     public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
-                .group("MenuProject API")
+                .group("FoodieScan API")
                 .pathsToMatch("/**")
+                .displayName("FoodieScan API")
                 .build();
     }
 }

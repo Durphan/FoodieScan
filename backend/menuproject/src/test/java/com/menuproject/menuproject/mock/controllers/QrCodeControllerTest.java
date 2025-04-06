@@ -13,9 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(QrCodeController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -52,4 +51,30 @@ class QrCodeControllerTest {
         verify(qrCodeServiceImpl, times(1)).saveQr("Este es un url");
 
     }
+
+    @Test
+    void QrGenerateTest() throws Exception{
+        //damos datos
+        String ulr = "Este es un url";
+        byte[] fakeImagen = new byte[]{1, 2, 3, 4, 5,};
+
+        // Simulamos comportamiento del servicio
+        when(qrCodeServiceImpl.findByUrlMenu("Este es un url")).thenReturn(fakeImagen);
+
+        //simalamos accion
+        mockMvc.perform(get("/api/qrcode/generate")
+                        .param("url", ulr)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Type", String.valueOf(MediaType.IMAGE_PNG)))//verificamos que envio una imagen
+                        .andExpect(content().bytes(fakeImagen));//comparamos con nuestra imagen.
+
+        // Verificar que el servicio se llamó correctamente
+        verify(qrCodeServiceImpl, times(1)).findByUrlMenu("Este es un url");
+
+    }
+
+
+
+
 }

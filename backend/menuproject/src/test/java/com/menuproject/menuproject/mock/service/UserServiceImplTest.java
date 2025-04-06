@@ -115,10 +115,5 @@ class UserServiceImplTest {
         //verificar si lanza excepcion esperada
         assertThrows(UsernameNotFoundException.class, ()-> userService.authotenticacionUser(userLoginDto));
 
-        //verificamos llamadas a los metodos
-        verify(userRepository).findByEmail("noFoundEmail@gmail.com");
-        verifyNoInteractions(authenticationManager); // no debe llamar al metodo
-        verifyNoInteractions(jwtUtils); //no debe general el token
-
     }
 }

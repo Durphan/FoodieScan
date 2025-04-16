@@ -40,7 +40,7 @@ public class BusinessController {
     public ResponseEntity<List<BusinessResponseDto>> getBusinessByUserId() {
         List<BusinessResponseDto> businesses = businessService.findAllByUserId().stream().map(
                 business -> new BusinessResponseDto(business.getName(), business.getPhoneNumber(),
-                        business.getEmailBusiness()))
+                        business.getEmailBusiness(), business.getIdBusiness()))
                 .toList();
         return new ResponseEntity<>(businesses, HttpStatus.ACCEPTED);
     }
@@ -49,7 +49,7 @@ public class BusinessController {
     public ResponseEntity<BusinessResponseDto> getBusinessById(@PathVariable long idBusiness) {
         Business business = businessService.findById(idBusiness);
         BusinessResponseDto businessResponse = new BusinessResponseDto(business.getName(), business.getPhoneNumber(),
-                business.getEmailBusiness());
+                business.getEmailBusiness(), business.getIdBusiness());
         return new ResponseEntity<>(businessResponse, HttpStatus.ACCEPTED);
     }
 
@@ -57,17 +57,18 @@ public class BusinessController {
     public ResponseEntity<BusinessResponseDto> updateBusiness(@PathVariable long idBusiness,
             @RequestBody @Valid BusinessRequestDto businessRequestDto) {
         businessService.updateBusinessById(idBusiness, businessRequestDto);
+        Business businessUpdated = businessService.findById(idBusiness);
         return new ResponseEntity<>(new BusinessResponseDto(businessRequestDto.name(), businessRequestDto.phoneNumber(),
-                businessRequestDto.email()), HttpStatus.ACCEPTED);
+                businessRequestDto.email(), businessUpdated.getIdBusiness()), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/desactivate/{idBusiness}")
     public ResponseEntity<BusinessResponseDto> desactivateBusiness(@PathVariable long idBusiness) {
         businessService.desactivateBusinessById(idBusiness);
-        Business business = businessService.findById(idBusiness);
-        BusinessResponseDto desactivatedBusiness = new BusinessResponseDto(business.getName(),
-                business.getPhoneNumber(),
-                business.getEmailBusiness());
+        Business businessDesactivated = businessService.findById(idBusiness);
+        BusinessResponseDto desactivatedBusiness = new BusinessResponseDto(businessDesactivated.getName(),
+                businessDesactivated.getPhoneNumber(),
+                businessDesactivated.getEmailBusiness(), businessDesactivated.getIdBusiness());
         return new ResponseEntity<>(desactivatedBusiness, HttpStatus.ACCEPTED);
     }
 }

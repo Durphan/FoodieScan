@@ -10,12 +10,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class QrCodeServiceImplTest {
+class QrCodeServiceImplTest {
 
     @Mock
     private QrCodeRepository qrCodeRepository;
@@ -24,22 +23,21 @@ public class QrCodeServiceImplTest {
     private QrCodeServiceImpl qrCodeServiceImpl;
 
     @Test
-    void QrSaveTest(){
-        //damos datos
+    void QrSaveTest() {
+        // damos datos
         String url = "Este es un link";
 
-        //simulamos metodo
+        // simulamos metodo
         this.qrCodeServiceImpl.saveQr(url);
 
-        //verificamos
+        // verificamos
         ArgumentCaptor<QrCode> qrCodeArgumentCaptor = ArgumentCaptor.forClass(QrCode.class);
         verify(this.qrCodeRepository).save((qrCodeArgumentCaptor.capture()));
 
-        QrCode CaptureQrCode = qrCodeArgumentCaptor.getValue();
+        QrCode captureQrCode = qrCodeArgumentCaptor.getValue();
 
-        assertEquals("Este es un link", CaptureQrCode.getUrl());
+        assertEquals("Este es un link", captureQrCode.getUrl());
     }
-
 
     @Test
     void QrFindByUlrTest() throws Exception {

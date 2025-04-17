@@ -9,9 +9,8 @@ const MySwal = withReactContent(Swal);
 
 const MenuView = () => {
   const navigate = useNavigate();
-  const [menu, setMenu] = useState({ categories: [] });
+  const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -31,56 +30,69 @@ const MenuView = () => {
   }, [navigate]);
 
   useEffect(() => {
+    const fetchBusinesses = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "https://menuproject-backend-test.onrender.com/api/business/user",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setBusinesses(response.data || []);
+      } catch (error) {
+        console.error("Error al cargar negocios:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (isAuthenticated) {
-      const fetchMenu = async () => {
-        try {
-          const response = await axios.get("/api/menu");
-          setMenu(response.data || { categories: [] });
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchMenu();
+      fetchBusinesses();
     }
   }, [isAuthenticated]);
 
-  const handleCreateMenu = () => {
-    navigate("/dashboard/menu/create");
+  const handleGoToCreateMenu = (businessId) => {
+    navigate(`/dashboard/menu/create/${businessId}`);
   };
 
-  const handleEditMenu = (id) => {
-    navigate(`/dashboard/menu/edit/${id}`);
+  const handleRegisterRestaurant = () => {
+    navigate("/dashboard/menu/bussines");
   };
 
   if (!isAuthenticated) return null;
-  if (loading) return <p>Cargando menú...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <p className={styles.loading}>Cargando negocios...</p>;
 
   return (
     <div className={styles.container}>
-      <div className={styles.card}>
-        <h1 className={styles.title}>Cartas</h1>
-        {menu?.categories?.length > 0 ? (
-          <div className={styles.menuContainer}>
-            {menu.categories.map((category) => (
-              <div key={category.id} className={styles.category}>
-                <span>{category.name}</span>
-                <button
-                  className={styles.editButton}
-                  onClick={() => handleEditMenu(category.id)}
-                >
-                  Editar
-                </button>
-              </div>
-            ))}
-          </div>
+      <h1 className={styles.title}>Tus negocios</h1>
+
+      <div className={styles.cardsContainer}>
+        {businesses.length > 0 ? (
+          businesses.map((business) => (
+            <div
+              key={business.idBusiness}
+              className={styles.card}
+              onClick={() => handleGoToCreateMenu(business.idBusiness)}
+            >
+              <h2>{business.name}</h2>
+
+              <span className={styles.link}>Ver menú</span>
+            </div>
+          ))
         ) : (
-          <button onClick={handleCreateMenu} className={styles.createButton}>
-            + Nueva carta
-          </button>
+          <p>No tienes restaurantes registrados aún.</p>
         )}
+      </div>
+
+      <div className={styles.newSection}>
+        <hr />
+        <h2>¿Nuevo restaurante?</h2>
+        <button className={styles.newButton} onClick={handleRegisterRestaurant}>
+          Registrar nuevo restaurante
+        </button>
       </div>
     </div>
   );

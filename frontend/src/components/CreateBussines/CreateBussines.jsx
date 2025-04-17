@@ -51,7 +51,7 @@ const CreateBussines = () => {
       }
 
       alert("Restaurante registrado exitosamente.");
-      navigate("/dashboard");
+      navigate("/dashboard/menu/");
     } catch (error) {
       console.error("Error:", error);
       alert("Hubo un problema al registrar el restaurante.");

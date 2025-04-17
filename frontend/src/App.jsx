@@ -7,13 +7,13 @@ import {
 import "./App.css";
 import Menu from "./components/MenuDemo/Menu/Menu";
 import MenuView from "./pages/DashboardMenu/MenuView";
-import CreateMenu from "./components/HeroSection/CreateMenu/CreateMenu";
 import LandingPage from "./templates/LandingPage";
 import Signin from "./templates/Signin";
 import Signup from "./templates/Signup";
 import DashboardLayout from "./layouts/DashboardLayout";
 import QRCodeView from "./components/Qr/Qr";
 import CreateBussines from "./components/CreateBussines/CreateBussines";
+import CreateMenu from "./components/CreateMenu/CreateMenu";
 
 function App() {
   return (
@@ -28,8 +28,12 @@ function App() {
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Navigate to="menu" replace />} />
           <Route path="menu" element={<MenuView />} />
-          <Route path="menu/create" element={<CreateMenu />} />
-          <Route path="menu/createBussines" element={<CreateBussines />} />
+          <Route path="menu/bussines" element={<CreateBussines />} />
+          <Route
+            path="/dashboard/menu/create/:businessId"
+            element={<CreateMenu />}
+          />
+
           <Route path="qr" element={<QRCodeView />} />
         </Route>
       </Routes>

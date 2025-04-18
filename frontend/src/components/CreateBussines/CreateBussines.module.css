@@ -58,6 +58,18 @@ form {
   transition: background 0.3s ease-in-out;
 }
 
+.newButton {
+  margin-top: 1rem;
+  background-color: #007bff;
+  color: white;
+  padding: 0.8rem 1.6rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
 .saveButton:hover {
   background-color: #1e4bb8;
 }

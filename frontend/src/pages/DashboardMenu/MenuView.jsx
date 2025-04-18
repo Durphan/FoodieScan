@@ -67,6 +67,13 @@ const MenuView = () => {
 
   return (
     <div className={styles.container}>
+      <div className={styles.logoContainer}>
+        <img
+          src="/logo.png"
+          alt="Logo del Restaurante"
+          className={styles.logo}
+        />
+      </div>
       <h1 className={styles.title}>Tus negocios</h1>
 
       <div className={styles.cardsContainer}>

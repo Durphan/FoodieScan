@@ -33,3 +33,9 @@
 .formContainer p {
   color: #007bff;
 }
+
+@media (max-width: 768px) {
+  .formImage {
+    display: none;
+  }
+}

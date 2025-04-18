@@ -75,3 +75,43 @@
 .logout:hover {
   background-color: rgba(255, 0, 0, 0.2);
 }
+
+@media (max-width: 767px) {
+  .sidebar {
+    display: none;
+  }
+
+  .bottomBar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #1e3a8a;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .bottomBar .navItem {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .bottomBar .active {
+    color: #93c5fd;
+  }
+
+  .bottomBar .icon {
+    font-size: 24px;
+  }
+}

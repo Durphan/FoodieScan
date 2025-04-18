@@ -5,7 +5,7 @@ import styles from "./Signin.module.css";
 const Signin = () => {
   return (
     <div className={styles.container}>
-      <div>
+      <div className={styles.formImage}>
         <img src="/login.png" alt="loginImage" />
       </div>
       <div className={styles.formContainer}>

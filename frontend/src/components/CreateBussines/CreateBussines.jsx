@@ -62,12 +62,11 @@ const CreateBussines = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.logoContainer} onClick={() => navigate("/")}>
-        <img
-          src="/logo.png"
-          alt="Logo del Restaurante"
-          className={styles.logo}
-        />
+      <div
+        className={styles.logoContainer}
+        onClick={() => navigate("/dashboard/menu")}
+      >
+        <button className={styles.newButton}>Volver</button>
       </div>
       <h1>Registrar Restaurante</h1>
 

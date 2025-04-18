@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FiHome, FiLogOut } from "react-icons/fi";
 import { MdQrCode } from "react-icons/md";
 import Swal from "sweetalert2";
@@ -8,8 +8,27 @@ import styles from "./Sidebar.module.css";
 
 const Sidebar = () => {
   const [active, setActive] = useState("inicio");
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (location.pathname.includes("/qr")) {
+      setActive("qr");
+    } else {
+      setActive("inicio");
+    }
+  }, [location.pathname]);
 
   const handleLogout = () => {
     Swal.fire({
@@ -36,6 +55,34 @@ const Sidebar = () => {
       }
     });
   };
+
+  if (isMobile) {
+    return (
+      <nav className={styles.bottomBar}>
+        <Link to="/dashboard">
+          <button
+            className={`${styles.navItem} ${
+              active === "inicio" ? styles.active : ""
+            }`}
+          >
+            <FiHome className={styles.icon} />
+          </button>
+        </Link>
+        <Link to="/dashboard/qr">
+          <button
+            className={`${styles.navItem} ${
+              active === "qr" ? styles.active : ""
+            }`}
+          >
+            <MdQrCode className={styles.icon} />
+          </button>
+        </Link>
+        <button className={styles.navItem} onClick={handleLogout}>
+          <FiLogOut className={styles.icon} />
+        </button>
+      </nav>
+    );
+  }
 
   return (
     <aside className={styles.sidebar}>

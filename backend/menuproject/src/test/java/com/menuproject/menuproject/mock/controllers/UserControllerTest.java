@@ -9,12 +9,13 @@ import com.menuproject.menuproject.repository.UserRepository;
 import com.menuproject.menuproject.service.user.UserServiceImpl;
 import com.menuproject.menuproject.util.JwtUtils;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.*;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Date;
@@ -30,17 +31,16 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private UserServiceImpl userServiceImpl;
 
-    @MockBean
+    @MockitoBean
     private JwtUtils jwtUtils;
-    @MockBean
+    @MockitoBean
     private UserRepository userRepository;
 
-    @MockBean
+    @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -53,8 +53,8 @@ class UserControllerTest {
         when(userServiceImpl.authotenticacionUser(any(UserLoginDto.class))).thenReturn(jwtDto);
 
         mockMvc.perform(post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userLoginDto)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userLoginDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(jwtDto.id()))
                 .andExpect(jsonPath("$.name").value(jwtDto.name()))
@@ -66,18 +66,18 @@ class UserControllerTest {
     @Test
     void testRegisterUser() throws Exception {
         // Datos de prueba
-        UserRequestDto userRequestDto= new UserRequestDto("Test User", "test@example.com", "123456789", "Pasword1234", new Date(2025-12-31));
+        UserRequestDto userRequestDto = new UserRequestDto("Test User", "test@example.com", "123456789", "Pasword1234",
+                new Date(2025 - 12 - 31));
 
-
-        //realizamos simulacion de metodos
+        // realizamos simulacion de metodos
         when(bCryptPasswordEncoder.encode("Pasword1234")).thenReturn("hashedPassword");
 
-        //realizamos conversion
+        // realizamos conversion
         this.userServiceImpl.save(userRequestDto);
 
         mockMvc.perform(post("/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userRequestDto)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequestDto)))
                 .andExpect(status().isCreated());
     }
 }

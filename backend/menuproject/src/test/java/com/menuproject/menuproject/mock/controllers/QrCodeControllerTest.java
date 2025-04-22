@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
@@ -24,27 +24,27 @@ class QrCodeControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private JwtUtils jwtUtils;
-    @MockBean
+    @MockitoBean
     private UserRepository userRepository;
 
-    @MockBean
+    @MockitoBean
     private QrCodeServiceImpl qrCodeServiceImpl;
 
     @Test
-    void QrSaveTest() throws Exception{
-        //damos datos
+    void QrSaveTest() throws Exception {
+        // damos datos
         String ulr = "Este es un url";
 
         // Simulamos comportamiento del servicio
         doNothing().when(qrCodeServiceImpl).saveQr(anyString());
 
-        //simalamos accion
+        // simalamos accion
         mockMvc.perform(post("/api/qrcode/save")
-                        .param("url", ulr)
-                        .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isAccepted())
+                .param("url", ulr)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isAccepted())
                 .andExpect(content().string("Se genero el QR"));
 
         // Verificar que el servicio se llamó correctamente
@@ -53,28 +53,26 @@ class QrCodeControllerTest {
     }
 
     @Test
-    void QrGenerateTest() throws Exception{
-        //damos datos
+    void QrGenerateTest() throws Exception {
+        // damos datos
         String ulr = "Este es un url";
-        byte[] fakeImagen = new byte[]{1, 2, 3, 4, 5,};
+        byte[] fakeImagen = new byte[] { 1, 2, 3, 4, 5, };
 
         // Simulamos comportamiento del servicio
         when(qrCodeServiceImpl.findByUrlMenu("Este es un url")).thenReturn(fakeImagen);
 
-        //simalamos accion
+        // simalamos accion
         mockMvc.perform(get("/api/qrcode/generate")
-                        .param("url", ulr)
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param("url", ulr)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(header().string("Content-Type", String.valueOf(MediaType.IMAGE_PNG)))//verificamos que envio una imagen
-                        .andExpect(content().bytes(fakeImagen));//comparamos con nuestra imagen.
+                .andExpect(header().string("Content-Type", String.valueOf(MediaType.IMAGE_PNG)))// verificamos que envio
+                                                                                                // una imagen
+                .andExpect(content().bytes(fakeImagen));// comparamos con nuestra imagen.
 
         // Verificar que el servicio se llamó correctamente
         verify(qrCodeServiceImpl, times(1)).findByUrlMenu("Este es un url");
 
     }
-
-
-
 
 }

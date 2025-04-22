@@ -1,6 +1,5 @@
 package com.menuproject.menuproject.mock.service;
 
-
 import com.menuproject.menuproject.dto.request.user.UserLoginDto;
 import com.menuproject.menuproject.dto.request.user.UserRequestDto;
 import com.menuproject.menuproject.dto.response.JwtDto;
@@ -8,6 +7,7 @@ import com.menuproject.menuproject.models.User;
 import com.menuproject.menuproject.repository.UserRepository;
 import com.menuproject.menuproject.service.user.UserServiceImpl;
 import com.menuproject.menuproject.util.JwtUtils;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
@@ -28,34 +29,37 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
-
+    private final Calendar calendar = Calendar.getInstance();
+    {
+        calendar.set(1996, Calendar.DECEMBER, 31);
+    }
+    private final Date date = calendar.getTime();
     @Mock
     private UserRepository userRepository;
     @Mock
-    private  BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Mock
-    private  AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
     @Mock
-    private  JwtUtils jwtUtils;
-
+    private JwtUtils jwtUtils;
 
     @InjectMocks
     private UserServiceImpl userService;
 
-
     @Test
-    void testSave(){
-        //damos datos
+    void testSave() {
+        // damos datos
         when(bCryptPasswordEncoder.encode("123456")).thenReturn("hashedPassword");
 
-        UserRequestDto userTest = new UserRequestDto("TestUsuario","testUsuario@email.com", "3514558796","123456", new Date(1996, 12, 31));
+        UserRequestDto userTest = new UserRequestDto("TestUsuario", "testUsuario@email.com", "3514558796", "123456",
+                date);
 
-        //realizamos accion
+        // realizamos accion
         this.userService.save(userTest);
 
-        //comprobamos
+        // comprobamos
         ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
-        verify(this.userRepository).save( userArgumentCaptor.capture());
+        verify(this.userRepository).save(userArgumentCaptor.capture());
 
         User capturedUser = userArgumentCaptor.getValue();
 
@@ -63,30 +67,31 @@ class UserServiceImplTest {
         assertEquals("testUsuario@email.com", capturedUser.getEmail());
         assertEquals("3514558796", capturedUser.getPhoneNumber());
         assertEquals("hashedPassword", capturedUser.getPassword());
-        assertEquals(new Date(1996, 12, 31), capturedUser.getDateOfBirth());
+        assertEquals(date, capturedUser.getDateOfBirth());
 
     }
 
     @Test
     void tesAuthenticacion() {
-        //damos datos
+        // damos datos
         UserLoginDto userLoginDto = new UserLoginDto("testUsuario@email.com", "123456");
 
-        //realizamos de autenticacion
+        // realizamos de autenticacion
         Authentication authenticationMock = mock(Authentication.class);
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authenticationMock);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(authenticationMock);
 
-        //realizamos creacion del token
+        // realizamos creacion del token
         String testJwt = "esto-es-un-token";
         when(jwtUtils.createToken(authenticationMock)).thenReturn(testJwt);
 
-        //realizamos busqueda en BD
-        User user = new User(1L, "testUsuario@email.com", "123456", "3514558796", new Date(1996, 12, 31), "TestUsuario");
+        // realizamos busqueda en BD
+        User user = new User(1L, "testUsuario@email.com", "123456", "3514558796", date,
+                "TestUsuario");
         when(userRepository.findByEmail("testUsuario@email.com")).thenReturn(Optional.of(user));
 
-        //llamamos al metodo
+        // llamamos al metodo
         JwtDto jwtDto = userService.authotenticacionUser(userLoginDto);
-
 
         // Verificar que los mocks fueron llamados correctamente
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
@@ -104,16 +109,16 @@ class UserServiceImplTest {
     }
 
     @Test
-    void TestAuthenticacionNoFount(){
+    void TestAuthenticacionNoFount() {
 
-        //damos datos
+        // damos datos
         UserLoginDto userLoginDto = new UserLoginDto("noFoundEmail@gmail.com", "123456");
 
-        //Realizamos consulta en BD "usuario no encontrado"
+        // Realizamos consulta en BD "usuario no encontrado"
         when(userRepository.findByEmail("noFoundEmail@gmail.com")).thenReturn(Optional.empty());
 
-        //verificar si lanza excepcion esperada
-        assertThrows(UsernameNotFoundException.class, ()-> userService.authotenticacionUser(userLoginDto));
+        // verificar si lanza excepcion esperada
+        assertThrows(UsernameNotFoundException.class, () -> userService.authotenticacionUser(userLoginDto));
 
     }
 }

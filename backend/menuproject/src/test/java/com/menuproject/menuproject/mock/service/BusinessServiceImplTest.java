@@ -28,7 +28,7 @@ class BusinessServiceImplTest {
     @Mock
     BusinessRepository businessRepository;
     @InjectMocks
-    BusinessServiceImpl businessServiceImpl;
+    BusinessServiceImpl businessServiceImplSut;
     @Mock
     UserServiceImpl userServiceImpl;
 
@@ -48,7 +48,7 @@ class BusinessServiceImplTest {
     void saveBusinessTest() {
         BusinessRequestDto businessRequestDto = new BusinessRequestDto("business name", "1232312",
                 "business@gmail.com");
-        businessServiceImpl.save(businessRequestDto);
+        businessServiceImplSut.save(businessRequestDto);
         ArgumentCaptor<Business> businessCaptor = ArgumentCaptor.forClass(Business.class);
         Mockito.verify(businessRepository).save(businessCaptor.capture());
         Business businessCreated = businessCaptor.getValue();
@@ -59,7 +59,7 @@ class BusinessServiceImplTest {
     void findByIdTest() {
         Mockito.when(userServiceImpl.getAuthenticatedUserId()).thenReturn(testUser);
         Mockito.when(businessRepository.findById(0L)).thenReturn(Optional.of(testBusiness));
-        Business foundBusinesss = businessServiceImpl.findById(0L);
+        Business foundBusinesss = businessServiceImplSut.findById(0L);
         assertEquals(testBusiness.getName(), foundBusinesss.getName());
         assertEquals(testBusiness.getIdUser().getIdUser(), foundBusinesss.getIdUser().getIdUser());
     }
@@ -68,7 +68,7 @@ class BusinessServiceImplTest {
     void findAllByUserIdTest() {
         Mockito.when(userServiceImpl.getAuthenticatedUserId()).thenReturn(testUser);
         Mockito.when(businessRepository.findAllByIdUser_idUser(testUser.getIdUser())).thenReturn(List.of(testBusiness));
-        List<Business> foundBusiness = businessServiceImpl.findAllByUserId();
+        List<Business> foundBusiness = businessServiceImplSut.findAllByUserId();
         assertEquals(testBusiness.getName(), foundBusiness.get(0).getName());
     }
 
@@ -78,7 +78,7 @@ class BusinessServiceImplTest {
         Mockito.when(businessRepository.findById(0L)).thenReturn(Optional.of(testBusiness));
         BusinessRequestDto newBusinessRequestDto = new BusinessRequestDto("new business", "1234532",
                 "dsadas@gmail.com");
-        businessServiceImpl.updateBusinessById(0L, newBusinessRequestDto);
+        businessServiceImplSut.updateBusinessById(0L, newBusinessRequestDto);
         ArgumentCaptor<Business> businessCaptor = ArgumentCaptor.forClass(Business.class);
         Mockito.verify(businessRepository).save(businessCaptor.capture());
         Business updatedBusiness = businessCaptor.getValue();
@@ -89,7 +89,7 @@ class BusinessServiceImplTest {
     void desactivateBusinessTest() {
         Mockito.when(userServiceImpl.getAuthenticatedUserId()).thenReturn(testUser);
         Mockito.when(businessRepository.findById(0L)).thenReturn(Optional.of(testBusiness));
-        businessServiceImpl.desactivateBusinessById(0L);
+        businessServiceImplSut.desactivateBusinessById(0L);
         ArgumentCaptor<Business> businessCaptor = ArgumentCaptor.forClass(Business.class);
         Mockito.verify(businessRepository).save(businessCaptor.capture());
         Business desactivatedBusiness = businessCaptor.getValue();

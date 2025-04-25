@@ -55,7 +55,10 @@ public class MenuServiceImpl implements ImenuService {
 
         business = businessServiceImpl.findById(menuRequestDto.businessId());
 
-        if (menu != null && business != null) {
+        if (business == null) {
+            throw new RuntimeException("No se encontro el negocio id:" + menuRequestDto.businessId());
+        }
+        if (menu != null) {
             // actualizamos datos
             menu.setName(menuRequestDto.name());
             menu.setIdBusiness(business);

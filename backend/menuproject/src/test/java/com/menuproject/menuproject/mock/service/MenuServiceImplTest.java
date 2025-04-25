@@ -1,9 +1,11 @@
 package com.menuproject.menuproject.mock.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -41,15 +43,17 @@ class MenuServiceImplTest {
 
     private final Date date = calendar.getTime();
 
-    private final MenuRequestDto menuRequestDto = new MenuRequestDto("test Menu", 0L);
-
     private final User testUser = new User(0L, "testuser@gmail.com", "testpassword", "1234532", date, "testuser");
 
     private final Business testBusiness = new Business(0L, "test business", "1234356", "testebusiness@gmail.com",
             testUser, false);
 
+    private final Menu menu = new Menu("testMenu", 0L, testBusiness, null);
+
     @Test
     void menuSaveTest() {
+
+        MenuRequestDto menuRequestDto = new MenuRequestDto("test Menu", 0L);
 
         menuServiceSut.save(menuRequestDto);
 
@@ -62,8 +66,6 @@ class MenuServiceImplTest {
 
     @Test
     void menuUpdateTest() {
-
-        Menu menu = new Menu("testMenu", 0L, testBusiness, null);
 
         MenuRequestDto newMenuRequestDto = new MenuRequestDto("new test menu", 0L);
 
@@ -82,4 +84,26 @@ class MenuServiceImplTest {
         assertEquals("new test menu", newMenu.getName());
     }
 
+    @Test
+    void menuFindAllByIdBusinessTest() {
+
+        Mockito.when(menuRepository.findAllByIdBusiness_IdBusiness(0L)).thenReturn(List.of(menu));
+
+        List<Menu> menus = menuServiceSut.findAllByIdBusinnes(0L);
+
+        assertEquals(1, menus.size());
+    }
+
+    @Test
+    void deleteMenuTest() {
+
+        Mockito.when(menuRepository.findById(0L)).thenReturn(Optional.of(menu));
+
+        menuServiceSut.deleteMenu(0L);
+
+        Mockito.verify(menuRepository).delete(menu);
+
+        assertThrows(RuntimeException.class,
+                () -> menuServiceSut.upDateMenu(0L, new MenuRequestDto("new test menu", 0L)));
+    }
 }

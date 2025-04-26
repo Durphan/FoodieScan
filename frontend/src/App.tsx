@@ -34,7 +34,6 @@ const routes = [
     path: "/dashboard",
     element: <DashboardView />,
     children: [
-      { index: true, element: <Navigate to="menu" replace /> },
       { path: "qr", element: <DashboardQr /> },
       { path: "menu", element: <DashboardMenuView /> },
       { path: "menu/business", element: <DashboardCreateBusiness /> },

@@ -12,6 +12,14 @@ export default defineConfig({
       typescript: true
     })
   ],
+  resolve: {
+    alias: {
+      '@landing': '/src/landing',
+      '@dashboard': '/src/dashboard',
+      '@shared': '/src/shared',
+      '@auth': '/src/auth',
+    }
+  },
 
   preview: {
     port: 4500,

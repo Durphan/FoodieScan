@@ -94,7 +94,6 @@
 				<artifactId>javase</artifactId>
 				<version>3.5.2</version>
 			</dependency>
- 
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter -->
 		<dependency>
 			<groupId>org.mockito</groupId>

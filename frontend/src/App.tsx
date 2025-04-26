@@ -4,16 +4,18 @@ import {
   useRoutes,
   Navigate,
 } from "react-router-dom";
-import AuthSignInView from "@auth/templates/AuthSignInView";
-import AuthSingUpView from "@auth/templates/AuthSignUpView";
-import DashboardView from "@dashboard/templates/DashboardView";
-import DashboardMenuView from "@dashboard/templates/DashboardMenuView";
-import DashboardCreateBusiness from "@dashboard/components/DashboardCreateBusiness";
-import DashboardCreateMenu from "@dashboard/components/DashboardCreateMenu";
-import DashboardQr from "@dashboard/components/DashboardQr";
-import LandingView from "@landing/templates/LandingView";
-import LandingMenu from "@landing/components/LandingMenu";
-import NotFound from "./NotFound";
+import React from "react";
+
+const AuthSignInView = React.lazy(() => import("@auth/templates/AuthSignInView"));
+const AuthSingUpView = React.lazy(() => import("@auth/templates/AuthSignUpView"));
+const DashboardView = React.lazy(() => import("@dashboard/templates/DashboardView"));
+const DashboardMenuView = React.lazy(() => import("@dashboard/templates/DashboardMenuView"));
+const DashboardCreateBusiness = React.lazy(() => import("@dashboard/components/DashboardCreateBusiness"));
+const DashboardCreateMenu = React.lazy(() => import("@dashboard/components/DashboardCreateMenu"));
+const DashboardQr = React.lazy(() => import("@dashboard/components/DashboardQr"));
+const LandingView = React.lazy(() => import("@landing/templates/LandingView"));
+const LandingMenu = React.lazy(() => import("@landing/components/LandingMenu"));
+const NotFound = React.lazy(() => import("./NotFound"));
 
 
 const routes = [

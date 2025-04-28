@@ -7,7 +7,14 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+     "baseUrl": "./",
+     "paths": {
+      "@landing/*": ["src/landing/*"],
+      "@dashboard/*": ["src/dashboard/*"],
+      "@shared/*": ["src/shared/*"],
+      "@auth/*": ["src/auth/*"]
+    }
   },
   "include": ["src"]
 }

@@ -65,11 +65,18 @@ export default function AuthLoginForm() {
     }
 
     setIsLoading(false);
-  }
+  };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <form
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <TextField
           label="E-mail"
           variant="outlined"
@@ -118,5 +125,5 @@ export default function AuthLoginForm() {
         </Link>
       </p>
     </div>
-  )
+  );
 }

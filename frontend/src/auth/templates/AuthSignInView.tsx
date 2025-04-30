@@ -3,11 +3,20 @@ import { Link } from "react-router-dom";
 
 export default function AuthSignInView() {
   return (
-    <div>
+    <div style={{ display: "flex" }}>
       <div>
         <img src="/login.png" alt="loginImage" />
       </div>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          width: "100vh",
+        }}
+      >
         <Link to={"/"}>
           <img src="/logo.png" alt="logo" />
         </Link>
@@ -15,10 +24,8 @@ export default function AuthSignInView() {
         <AuthLoginForm />
       </div>
     </div>
-  )
+  );
 }
-
-
 
 // code javascript
 // import LoginForm from "../components/LoginForm/LoginForm";

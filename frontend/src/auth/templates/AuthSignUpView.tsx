@@ -1,6 +1,20 @@
+import AuthRegisterForm from "@auth/components/AuthRegisterForm";
+import { Link } from "react-router-dom";
+
 export default function AuthSingUpView() {
   return (
-    <div>SingUp template</div>
+    <div>
+      <div>
+        <img src="/registro.png" alt="Register Image" />
+        <div>
+          <Link to={"/"}>
+            <img src="/logo.png" alt="logo" />
+          </Link>
+          <p>Registrarse</p>
+          <AuthRegisterForm />
+        </div>
+      </div>
+    </div>
   )
 }
 

@@ -1,10 +1,11 @@
+import { UserLogin } from "@auth/interfaces/auth.interface";
 import { create } from "zustand";
 
 const useAuthStore = create((set) => ({
   token: localStorage.getItem("token") || null,
   user: null,
 
-  login: (token, user) => {
+  login: (token: string, user: UserLogin) => {
     set({ token, user });
 
     localStorage.setItem("token", token);

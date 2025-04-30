@@ -1,10 +1,31 @@
+import AuthLoginForm from "@auth/components/AuthLoginForm";
+import { Link } from "react-router-dom";
+
 export default function AuthSignInView() {
   return (
-    <div>SignIn template</div>
-  )
+    <div style={{ display: "flex" }}>
+      <div>
+        <img src="/login.png" alt="loginImage" />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          width: "100vh",
+        }}
+      >
+        <Link to={"/"}>
+          <img src="/logo.png" alt="logo" />
+        </Link>
+        <p>Iniciar sesión</p>
+        <AuthLoginForm />
+      </div>
+    </div>
+  );
 }
-
-
 
 // code javascript
 // import LoginForm from "../components/LoginForm/LoginForm";

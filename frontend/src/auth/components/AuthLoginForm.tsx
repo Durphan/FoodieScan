@@ -1,7 +1,11 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import Swal from "sweetalert2";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "@auth/schemas/auth.schema";
+import { useNavigate } from "react-router-dom";
+import { UserLogin } from "@auth/interfaces/auth.interface";
+import { useState } from "react";
+import { authLogin } from "@auth/services/auth.service";
+import Swal from "sweetalert2";
 import {
   TextField,
   IconButton,
@@ -9,17 +13,12 @@ import {
   Button,
   CircularProgress,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
-import styles from "./LoginForm.module.css";
-import { loginSchema } from "../../schemas/authSchemas";
-import { useNavigate } from "react-router-dom";
-/* import useAuthStore from "../../store/authStore"; */
+import { Link } from "react-router-dom";
 
-const LoginForm = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  /*  const login = useAuthStore((state) => state.login); */
+export default function AuthLoginForm() {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -31,68 +30,46 @@ const LoginForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data) => {
-    console.log("Datos del formulario:", data);
+  const onSubmit = async (data: UserLogin) => {
+    console.log("Datos del formulario", data);
     setIsLoading(true);
 
-    try {
-      const response = await fetch(
-        /* `${import.meta.env.VITE_API_URL}/auth/login`, */
-        `https://menuproject-backend-test.onrender.com/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+    const user = await authLogin(data);
+    if (user.status === 200) {
+      Swal.fire({
+        position: "top",
+        icon: "success",
+        toast: true,
+        title: `Bienvenido`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
 
-      const result = await response.json();
-      console.log(result);
-
-      if (response.ok) {
-        Swal.fire({
-          position: "top",
-          icon: "success",
-          toast: true,
-          title: `Bienvenido`,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-
-        if (result.jwtToken) {
-          /* login(result.jwtToken, result.user); */
-          localStorage.setItem("token", result.jwtToken);
-          navigate("/dashboard/menu");
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "No se recibió un token.",
-          });
-        }
+      if (user.data.jwtToken) {
+        /* login(result.jwtToken, result.user); */
+        localStorage.setItem("token", user.data.jwtToken);
+        navigate("/dashboard/menu");
       } else {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: result.message || "Credenciales incorrectas.",
+          text: "No se recibió un token.",
         });
       }
-    } catch (error) {
-      console.error("Error en la solicitud:", error);
+    } else {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Ocurrió un error. Inténtalo de nuevo más tarde.",
+        text: user.data.message || "Credenciales incorrectas.",
       });
-    } finally {
-      setIsLoading(false);
     }
-  };
+
+    setIsLoading(false);
+  }
+
   return (
-    <div className={styles.container}>
-      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+    <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
           label="E-mail"
           variant="outlined"
@@ -141,7 +118,5 @@ const LoginForm = () => {
         </Link>
       </p>
     </div>
-  );
-};
-
-export default LoginForm;
+  )
+}

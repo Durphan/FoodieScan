@@ -1,11 +1,15 @@
+import DashboardSidebar from "@dashboard/components/DashboardSidebar";
 import { Outlet } from "react-router-dom";
+import "./DashboardView.css";
 
 export default function DashboardView() {
   return (
-    <>
-      <p>DashboardView</p>
-      <Outlet />
-    </>
+    <div className="layout">
+      <DashboardSidebar />
+      <section className="content ml-96">
+        <Outlet />
+      </section>
+    </div>
   )
 }
 

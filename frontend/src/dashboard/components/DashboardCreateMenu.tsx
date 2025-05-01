@@ -1,6 +1,73 @@
+import { useNavigate, useParams } from "react-router-dom";
+import "./DashboardCreateMenu.css";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { menuSchema } from "@dashboard/schemas/dashboard.schema";
+import "./DashboardCreateMenu.css";
+import { createMenu } from "@dashboard/services/dashboard.service";
+import Swal from "sweetalert2";
+
 export default function DashboardCreateMenu() {
+  const navigate = useNavigate();
+  const { businessId } = useParams();
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(menuSchema),
+  });
+
+  const onSubmit = async (data: any) => {
+    setIsSaving(true);
+    const createNewMenu = await createMenu({ name: data.name, businessId: Number(businessId) })
+    console.log("createNewMenu response: ", createNewMenu)
+    if (createNewMenu?.status === 202) {
+      Swal.fire({
+        position: "top",
+        icon: "success",
+        toast: true,
+        title: `Menu creado correctamente`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      navigate("/dashboard/menu");
+    } else {
+      alert("Hubo un problema al crear el menú.");
+    }
+
+    setIsSaving(false);
+  }
   return (
-    <div>DashboardCreateMenu</div>
+    <div className="container">
+      <div
+        className="logoContainer"
+        onClick={() => navigate("/dashboard/menu")}
+      >
+        <button className="newButton">Volver</button>
+      </div>
+
+      <h1>Crear menú</h1>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="inputGroup">
+          <input
+            type="text"
+            placeholder="Nombre del menú"
+            {...register("name")}
+            className="input"
+          />
+          {errors.name && <p className="error">{errors.name.message}</p>}
+        </div>
+
+        <button type="submit" className="saveButton" disabled={isSaving}>
+          {isSaving ? "Guardando..." : "Crear Menú"}
+        </button>
+      </form>
+    </div>
   )
 }
 

@@ -1,6 +1,6 @@
 import { UserLogin, UserRegister } from "@auth/interfaces/auth.interface";
 
-const URI = "https://menuproject-backend-test.onrender.com";
+export const URI = "https://menuproject-backend-test.onrender.com";
 
 export const authLogin = async (user: UserLogin) => {
   try {
@@ -12,10 +12,17 @@ export const authLogin = async (user: UserLogin) => {
       body: JSON.stringify(user),
     });
 
-    const data = await response.json();
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return {
+        status: response.status, // return status 400
+        data: errorData.message || { message: "Credenciales Incorrectas" },
+      };
+    }
 
+    const data = await response.json();
     return {
-      status: response.status,
+      status: response.status, // return status 200
       data,
     };
   } catch (error) {
@@ -37,11 +44,16 @@ export const authRegister = async (user: UserRegister) => {
       body: JSON.stringify(user),
     });
 
-    const data = await response.json();
-
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Error en la solicitud: ", errorData);
+      return {
+        status: response.status, // return status 400
+        data:  errorData.message || { message: "Error en la solicitud" },
+      };
+    }
     return {
-      status: response.status,
-      data,
+      status: response.status, // return status 201
     };
   } catch (error) {
     console.error(error);

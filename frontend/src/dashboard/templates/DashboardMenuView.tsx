@@ -1,6 +1,91 @@
+import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { useNavigate } from "react-router-dom";
+import { getAllBusinesses } from "@dashboard/services/dashboard.service";
+import "./DashboardMenuView.css"
+
 export default function DashboardMenuView() {
+  const navigate = useNavigate();
+  const [businesses, setBusinesses] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const MySwal = withReactContent(Swal);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      MySwal.fire({
+        title: "Acceso denegado",
+        text: "Por favor inicia sesión o regístrate",
+        icon: "warning",
+        confirmButtonText: "Iniciar sesión",
+      }).then(() => {
+        navigate("/signin");
+      });
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [navigate]);
+
+
+  useEffect(() => {
+    const getBusinessesData = async () => {
+      const bussinesses = await getAllBusinesses()
+      setBusinesses(bussinesses?.data);
+    }
+    getBusinessesData()
+    setLoading(false);
+  }, [isAuthenticated])
+
+  const handleGoToCreateMenu = (businessId: string) => {
+    navigate(`/dashboard/menu/create/${businessId}`);
+  };
+
+  const handleRegisterRestaurant = () => {
+    navigate("/dashboard/menu/business");
+  };
+
+  if (!isAuthenticated) return null;
+  if (loading) return <p className="loading">Cargando negocios...</p>;
+
   return (
-    <div>DashboardMenuView</div>
+    <div className="container">
+      <div className="logoContainer">
+        <img
+          src="/logo.png"
+          alt="Logo del Restaurante"
+          className="logo"
+        />
+      </div>
+      <h1 className="title">Tus negocios</h1>
+
+      <div className="cardsContainer">
+        {businesses.length > 0 ? (
+          businesses.map((business) => (
+            <div
+              key={business.idBusiness}
+              className="card"
+              onClick={() => handleGoToCreateMenu(business.idBusiness)}
+            >
+              <h2>{business.name}</h2>
+
+              <span className="link">Ver menú</span>
+            </div>
+          ))
+        ) : (
+          <p>No tienes restaurantes registrados aún.</p>
+        )}
+      </div>
+
+      <div className="newSection">
+        <hr />
+        <h2>¿Nuevo restaurante?</h2>
+        <button className="newButton" onClick={handleRegisterRestaurant}>
+          Registrar nuevo restaurante
+        </button>
+      </div>
+    </div>
   )
 }
 

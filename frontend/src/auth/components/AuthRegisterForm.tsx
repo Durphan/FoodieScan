@@ -49,7 +49,7 @@ export default function AuthRegisterForm() {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: newUser.data.message,
+        text: newUser.data?.message,
       });
     }
 

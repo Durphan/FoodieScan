@@ -2,7 +2,6 @@ import "./index.css";
 import {
   BrowserRouter as Router,
   useRoutes,
-  Navigate,
 } from "react-router-dom";
 import React from "react";
 

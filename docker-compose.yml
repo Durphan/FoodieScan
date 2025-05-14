@@ -18,7 +18,7 @@ services:
     build:
       context: ./backend/menuproject
       dockerfile: Dockerfile
-    image: openjdk:17-jdk-alpine
+    image: openjdk:17-jdk-oracle
     container_name: api-menuproject
     depends_on:
       db-menuproject:
